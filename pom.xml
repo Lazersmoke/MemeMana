@@ -47,9 +47,5 @@
 						<id>spigot-repo</id>
 						<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 				</repository>
-								<repository>
-						<id>devoted-repo</id>
-						<url>http://dydoisbutts.info:8080/plugin/repository/everything/</url>
-				</repository>
 		</repositories>
 </project>

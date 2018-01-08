@@ -4,11 +4,12 @@ import com.github.maxopoly.MemeMana.MemeManaPlugin;
 
 public class ManaGainStat {
 
-	private int streak;
+	// Starts at lastDay and goes backward in time
+	private boolean[] recentLogins;
 	private long lastDay;
 
-	public ManaGainStat(int streak, long lastDay) {
-		this.streak = streak;
+	public ManaGainStat(boolean[] recentLogins, long lastDay) {
+		this.recentLogins = recentLogins;
 		this.lastDay = lastDay;
 	}
 
@@ -19,20 +20,30 @@ public class ManaGainStat {
 	 * @return True if the day has changed since the last check
 	 */
 	public boolean update() {
-		long currentDay = getDayFromTimeStamp(System.currentTimeMillis());
-		if (currentDay == lastDay) {
+		long daysPast = getDayFromTimeStamp(System.currentTimeMillis()) - lastDay;
+		int roll = MemeManaPlugin.getInstance().getManaConfig().getMaximumDailyMana();
+		if (daysPast == 0) {
 			return false;
 		}
-		if (currentDay == lastDay + 1) {
-			streak = Math.max(streak + 1, MemeManaPlugin.getInstance().getManaConfig().getMaximumDailyMana());
-		} else {
-			streak = 1;
+		
+		// If we haven't completely reset
+		if (daysPast < roll) {
+			// Shift the old days over, discarding as needed
+			System.arraycopy(recentLogins,0,recentLogins,daysPast,roll - daysPast);
 		}
+		// We didn't log in between the current day and the last day
+		System.arraycopy(new boolean[Math.max(daysPast,roll)],0,recentLogins,0,Math.max(daysPast,roll));
+		// We logged in today
+		recentLogins[0] = true;
 		lastDay = currentDay;
 		return true;
 	}
 
 	public int getStreak() {
+		int streak = 0;
+		for (boolean login : recentLogins) {
+			streak += login ? 1 : 0;
+		}
 		return streak;
 	}
 
