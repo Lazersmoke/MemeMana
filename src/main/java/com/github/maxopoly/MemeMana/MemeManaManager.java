@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
+
 public class MemeManaManager {
 
 	private Map<UUID, MemeManaPouch> playerPouches;
@@ -19,9 +21,8 @@ public class MemeManaManager {
 
 	}
 
-	public MemeManaPouch getPouch(UUID player) {
-		// TODO altmanager stuff
-		return playerPouches.get(player);
+	public MemeManaPouch getPouch(UUID uuid) {
+		return playerPouches.get(BSPlayer.byUUID(uuid).getUUID());
 	}
 
 	public int getNextManaID() {
