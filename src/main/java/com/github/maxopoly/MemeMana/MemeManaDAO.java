@@ -38,7 +38,7 @@ public class MemeManaDAO extends ManagedDatasource {
 				false,
 				"create table if not exists manaOwners (id int auto_increment unique, foreignId int not null, foreignIdType enum('PLAYER') not null, primary key(foreignId,foreignIdType));",
 				"create table if not exists manaUnits (id int not null references manaOwners(id), baseAmount double not null, fillGrade double not null default 1.0,"
-						+ "date timestamp not null default now(), ownerId int not null, unique (id), index `ownerIdIndex` (ownerId), primary key(id));",
+						+ "date timestamp not null default now(), ownerId int not null, originalOwnerId int not null, unique (id), index `ownerIdIndex` (ownerId), primary key(id));",
 				"create table if not exists manaStats (altgroupid int primary key, streak int not null, lastDay bigint not null);");
 	}
 
@@ -83,15 +83,28 @@ public class MemeManaDAO extends ManagedDatasource {
 	public void addManaUnit(MemeManaUnit unit, MemeManaOwner owner) {
 		try (Connection connection = getConnection();
 				PreparedStatement addManaUnit = connection
-						.prepareStatement("insert into manaUnits (id, baseAmount, fillGrade, date, ownerId) values(?,?,?,?,?);")) {
+						.prepareStatement("insert into manaUnits (id, baseAmount, fillGrade, date, ownerId, originalOwnerId) values(?,?,?,?,?,?);")) {
 			addManaUnit.setInt(1, unit.getID());
 			addManaUnit.setDouble(2, unit.getOriginalAmount());
 			addManaUnit.setDouble(3, unit.getFillGrade());
 			addManaUnit.setTimestamp(4, new Timestamp(unit.getGainTime()));
 			addManaUnit.setInt(5, getOwnerId(owner));
+			addManaUnit.setInt(6, getOwnerId(owner));
 			addManaUnit.execute();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem adding mana unit", e);
+		}
+	}
+
+	public void transferManaUnit(MemeManaUnit unit, MemeManaOwner newOwner) {
+		try (Connection connection = getConnection();
+				PreparedStatement transferManaUnit = connection
+						.prepareStatement("update manaUnits set ownerId=? where id=?;")) {
+			transferManaUnit.setInt(1, getOwnerId(newOwner));
+			transferManaUnit.setInt(2, unit.getID());
+			transferManaUnit.execute();
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Problem transferring mana unit", e);
 		}
 	}
 

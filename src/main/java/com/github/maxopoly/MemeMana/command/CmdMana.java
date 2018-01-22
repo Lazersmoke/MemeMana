@@ -70,7 +70,8 @@ public class CmdMana extends PlayerCommand {
 			return;
 		}
 		int repairPerUnitMana = MemeManaPlugin.getInstance().getManaConfig().getPearlRefillAmount(pearl.getPearlType());
-		MemeManaPouch pouch = MemeManaPlugin.getInstance().getManaManager().getPouch(MemeManaPlayerOwner.fromPlayer(player));
+		MemeManaOwner owner = MemeManaPlayerOwner.fromPlayer(player);
+		MemeManaPouch pouch = MemeManaPlugin.getInstance().getManaManager().getPouch(owner);
 		double manaAvailable = pouch.getContent();
 		int healthBefore = pearl.getHealth();
 		int manaToUse = Math.min((int)Math.ceil((maxHealth - healthBefore) / (double)repairPerUnitMana), (int)manaAvailable);
