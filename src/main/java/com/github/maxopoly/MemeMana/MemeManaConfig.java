@@ -13,6 +13,7 @@ public class MemeManaConfig {
 	private long manaGainTimeout;
 	private long manaWaitTime;
 	private int maximumDailyMana;
+	private int pearledManaScale;
 
 	public MemeManaConfig(MemeManaPlugin plugin) {
 		this.plugin = plugin;
@@ -28,6 +29,7 @@ public class MemeManaConfig {
 		manaGainTimeout = ConfigParsing.parseTime(config.getString("manaGainTimeout", "22h")) * 50L;
 		manaWaitTime = ConfigParsing.parseTime(config.getString("manaWaitTime", "30m"));
 		maximumDailyMana = config.getInt("maxDailyMana", 10);
+		pearledManaScale = config.getInt("pearledManaScale", 1);
 	}
 
 	public MemeManaDAO setupDatabase() {
@@ -62,6 +64,13 @@ public class MemeManaConfig {
 	 */
 	public int getMaximumDailyMana() {
 		return maximumDailyMana;
+	}
+
+	/**
+	 * @return Scale factor for pearled players damaging their pearls by logging in
+	 */
+	public int getPearledManaScale() {
+		return pearledManaScale;
 	}
 
 	/**

@@ -12,6 +12,7 @@ manaRotTime: 30d
 manaGainTimeout: 22h
 manaWaitTime: 30m
 maximumDailyMana: 10
+pearledManaScale: 1
 pearlRefillAmount: 
   EXILE: 1
   PRISON: 1

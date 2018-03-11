@@ -3,6 +3,7 @@ package com.github.maxopoly.MemeMana;
 import com.github.maxopoly.MemeMana.model.ManaGainStat;
 import com.github.maxopoly.MemeMana.model.MemeManaPouch;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearl;
 import com.civclassic.altmanager.AltManager;
 import org.bukkit.Bukkit;
 import java.util.Map;
@@ -36,6 +37,11 @@ public class PlayerActivityManager {
 			MemeManaPlugin.getInstance().getDAO().updateManaStat(owner,stat);
 			if(ExilePearlPlugin.getApi().isPlayerExiled(player)){
 				Bukkit.getPlayer(player).sendMessage(ChatColor.GRAY + "You didn't get any mana because you are pearled");
+				if(MemeManaPlugin.getInstance().getManaConfig().getPearledManaScale() != 0){
+					ExilePearl pearl = ExilePearlPlugin.getApi().getPearl(player);
+					pearl.setHealth(pearl.getHealth() - MemeManaPlugin.getInstance().getManaConfig().getPearledManaScale() * stat.getPayout());
+					Bukkit.getPlayer(player).sendMessage(ChatColor.GREEN + "You damaged your pearl by logging in");
+				}
 			}else{
 				giveOutReward(player,stat.getPayout());
 			}
