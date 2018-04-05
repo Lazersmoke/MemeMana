@@ -1,10 +1,10 @@
 package com.github.maxopoly.MemeMana.model;
 
 import com.github.maxopoly.MemeMana.MemeManaPlugin;
-import java.util.Date;
 
 public class ManaGainStat {
 
+	// Bit field. Left -> Right is forward in time, right most position is lastDay
 	private int streak;
 	private long lastDay;
 
@@ -25,21 +25,28 @@ public class ManaGainStat {
 	 * @return True if they should get mana
 	 */
 	public boolean update() {
-		long currentDay = new Date().getTime();
-		if (currentDay - lastDay < MemeManaPlugin.getInstance().getManaConfig().getManaGainTimeout()) {
+		long currentMillis = System.currentTimeMillis();
+		long serverRestartOffset = MemeManaPlugin.getInstance().getManaConfig().getServerRestartOffset();
+		long offsetDayRightNow = (currentMillis - serverRestartOffset) / 86400000L;
+		long offsetLastLoginDay = (lastDay - serverRestartOffset) / 86400000L;
+		long daysPast = offsetDayRightNow - offsetLastLoginDay;
+		if (daysPast < 1) {
 			return false;
 		}
-		if (currentDay - lastDay < (MemeManaPlugin.getInstance().getManaConfig().getManaGainTimeout() * 2L)) {
-			streak = Math.min(streak + 1, MemeManaPlugin.getInstance().getManaConfig().getMaximumDailyMana());
-			lastDay = currentDay;
-			return true;
-		}
-		streak = Math.max(1,streak - (int) Math.min((long) MemeManaPlugin.getInstance().getManaConfig().getMaximumDailyMana(),Math.max(0L,currentDay - lastDay)/MemeManaPlugin.getInstance().getManaConfig().getManaGainTimeout()));
-		lastDay = currentDay;
+		streak = ((streak << daysPast) | 1) & maxMask();
+		lastDay = currentMillis;
 		return true;
 	}
 
-	public int getStreak() {
+	private int maxMask() {
+		return ~((~0) << MemeManaPlugin.getInstance().getManaConfig().getMaximumDailyMana());
+	}
+
+	public int getPayout() {
+		return Integer.bitCount(streak);
+	}
+
+	public int getStreakField() {
 		return streak;
 	}
 
@@ -47,11 +54,8 @@ public class ManaGainStat {
 		return lastDay;
 	}
 
-	public long millisToNextGain() {
-		return MemeManaPlugin.getInstance().getManaConfig().getManaGainTimeout() - (new Date().getTime() - lastDay);
-	}
-
 	public void reset() {
 		this.streak = 0;
+		this.lastDay = 0;
 	}
 }

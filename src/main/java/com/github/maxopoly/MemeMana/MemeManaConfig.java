@@ -1,8 +1,8 @@
 package com.github.maxopoly.MemeMana;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.ConfigurationSection;
 import com.devotedmc.ExilePearl.PearlType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
 public class MemeManaConfig {
@@ -10,8 +10,8 @@ public class MemeManaConfig {
 	private MemeManaPlugin plugin;
 
 	private long manaRotTime;
-	private long manaGainTimeout;
 	private long manaWaitTime;
+	private long serverRestartOffset;
 	private int maximumDailyMana;
 
 	public MemeManaConfig(MemeManaPlugin plugin) {
@@ -25,8 +25,8 @@ public class MemeManaConfig {
 		FileConfiguration config = plugin.getConfig();
 		// 50 millis per tick
 		manaRotTime = ConfigParsing.parseTime(config.getString("manaRotTime", "90d")) * 50L;
-		manaGainTimeout = ConfigParsing.parseTime(config.getString("manaGainTimeout", "22h")) * 50L;
 		manaWaitTime = ConfigParsing.parseTime(config.getString("manaWaitTime", "30m"));
+		serverRestartOffset = ConfigParsing.parseTime(config.getString("serverRestartOffset", "10h5m"));
 		maximumDailyMana = config.getInt("maxDailyMana", 10);
 	}
 
@@ -65,17 +65,14 @@ public class MemeManaConfig {
 	}
 
 	/**
-	 * @return How long a player must wait between mana gains
-	 */
-	public long getManaGainTimeout() {
-		return manaGainTimeout;
-	}
-
-	/**
 	 * @return How long a player must wait after logging in to get their mana
 	 */
 	public long getManaWaitTime() {
 		return manaWaitTime;
+	}
+
+	public long getServerRestartOffset() {
+		return serverRestartOffset;
 	}
 
 	/**

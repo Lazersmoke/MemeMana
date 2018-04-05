@@ -1,12 +1,11 @@
 package com.github.maxopoly.MemeMana.command;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import com.github.maxopoly.MemeMana.MemeManaPlugin;
-import com.github.maxopoly.MemeMana.MemeManaOwnerManager;
-import org.bukkit.entity.Player;
-import org.bukkit.command.CommandSender;
 import java.util.List;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 public class CmdManaSimulateLogin extends PlayerCommand {
 	public CmdManaSimulateLogin(String name) {
@@ -25,7 +24,6 @@ public class CmdManaSimulateLogin extends PlayerCommand {
 		Player player = (Player) sender;
 		sender.sendMessage(ChatColor.YELLOW + "Simulating your login");
 		MemeManaPlugin.getInstance().getActivityManager().updatePlayer(player.getUniqueId());
-		sender.sendMessage(ChatColor.YELLOW + "Millis to next login: " + MemeManaPlugin.getInstance().getActivityManager().getForPlayer(MemeManaOwnerManager.fromPlayer(player)).millisToNextGain());
 		
 		return true;
 	}

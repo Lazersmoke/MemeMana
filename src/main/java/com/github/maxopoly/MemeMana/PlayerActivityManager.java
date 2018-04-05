@@ -1,14 +1,12 @@
 package com.github.maxopoly.MemeMana;
 
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.github.maxopoly.MemeMana.model.ManaGainStat;
 import com.github.maxopoly.MemeMana.model.MemeManaPouch;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.civclassic.altmanager.AltManager;
-import org.bukkit.Bukkit;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Date;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 
 public class PlayerActivityManager {
 
@@ -35,10 +33,12 @@ public class PlayerActivityManager {
 		if(stat.update()) {
 			MemeManaPlugin.getInstance().getDAO().updateManaStat(owner,stat);
 			if(ExilePearlPlugin.getApi().isPlayerExiled(player)){
-				giveOutReward(player,stat.getStreak());
-			}else{
 				Bukkit.getPlayer(player).sendMessage(ChatColor.GRAY + "You didn't get any mana because you are pearled");
+			}else{
+				giveOutReward(player,stat.getPayout());
 			}
+		}else{
+			Bukkit.getPlayer(player).sendMessage(ChatColor.GRAY + "You didn't get any mana because you already recieved mana today");
 		}
 	}
 

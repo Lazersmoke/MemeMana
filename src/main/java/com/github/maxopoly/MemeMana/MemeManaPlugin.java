@@ -1,13 +1,13 @@
 package com.github.maxopoly.MemeMana;
 
-import com.github.maxopoly.MemeMana.command.MemeManaCommandHandler;
 import com.github.maxopoly.MemeMana.command.CmdManaWithdraw;
+import com.github.maxopoly.MemeMana.command.MemeManaCommandHandler;
 import com.github.maxopoly.MemeMana.listener.LoginListener;
 import com.github.maxopoly.MemeMana.listener.PearlListener;
+import java.util.LinkedList;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-import java.util.LinkedList;
 
 public class MemeManaPlugin extends ACivMod {
 
@@ -29,6 +29,7 @@ public class MemeManaPlugin extends ACivMod {
 		config = new MemeManaConfig(this);
 		dao = config.setupDatabase();
 		dao.cleanseManaUnits();
+		registerNameLayerPerm();
 		activityManager = new PlayerActivityManager();
 		ownerManager = new MemeManaOwnerManager();
 		registerListener();

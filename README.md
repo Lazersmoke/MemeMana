@@ -21,15 +21,15 @@ You also need a significant amount of Mana to upgrade an Exile pearl to a Prison
 
 When you log in, you will get a message telling you how much Mana (if any) you got for logging in.
 You can check your total amount of Mana at any time by using `/manashow` or `/mns` for short.
-To refill a pearl, hold it in your hand and type `/manarefill` or `/mnr` (or `/manafill` or `/mnf`) to refill it as much as possible, or `/manarefill Amount` to refill it using up to `Amount` Mana.
+To refill a pearl, hold it in your hand and type `/ep refill` to refill it as much as possible, or `/ep refill Amount` to refill it using up to `Amount` Mana.
 
-To upgrade an Exile pearl to a Prison pearl, hold it in your hand, then use `/manaupgrade`.
+To upgrade an Exile pearl to a Prison pearl, hold it in your hand, then use `/ep upgrade`.
 
 ## I don't have vault access. How do I give my Mana to the vault owner?
 
 Type `/manatransfer Someone Amount` or `/mnt` (or `/mngive` or `/mng`) to transfer `Amount` Mana to the player or NameLayer group `Someone`.
 If someone transfers Mana to a group you have the `MEMEMANA_WITHDRAW` permission on, use `/manawithdraw Group Amount` to move the Mana from the NameLayer group to your personal account.
-Then you can use `/manarefill` (see above) to refill pearls.
+Then you can use `/ep refill` (see above) to refill pearls.
 
 ## Mana Decay
 
@@ -46,13 +46,19 @@ Your virtual Mana can be materialized into physical Mana, but **beware: physical
 Physical Mana is currently useless, but it might have a use in the future, like converting it to XP, or using it as an instant payment system.
 That said, you can get physical Mana by typing `/manamaterialize` or `/mnmat` and then clicking on Mana to materialize it.
 
+## I use multiple accounts. Do I get extra mana for logging in to each account?
+
+No. You get mana per-user, not per-account.
+If you use multiple accounts, they will share mana, and you will get mana exactly as often as you would normally, no matter how many accounts you use.
+This uses [AltManager](https://github.com/CivClassic/AltManager), which uses [BanStick](https://github.com/CivClassic/BanStick) associations.
+
 ## I don't want to make a spreadsheet of all my login times. How do I check when my Mana will decay?
 
 Hovering over the Mana in your `/manamaterialize` GUI will give you detailed information about when it will decay.
 
 ## I'm pearled and very very salty about it, and I want someone to blame. How do I figure out who is sponsoring my pearl?
 
-You can do `/manafuellog` or `/mnfl` to list all the times anyone has refueled or upgraded your pearl, including the person who originally recieved the mana for logging in.
+You can do `/manafuellog` or `/mnfl` to list all the times anyone has refueled or upgraded your pearl, including the account which originally recieved the mana for logging in.
 
 ## I'm an admin and I want to investigate someone's Mana without typing SQL queries. What do?
 

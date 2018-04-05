@@ -1,18 +1,16 @@
 package com.github.maxopoly.MemeMana;
 
 import com.github.maxopoly.MemeMana.model.ManaGainStat;
-import com.github.maxopoly.MemeMana.model.MemeManaPouch;
-import com.github.maxopoly.MemeMana.model.MemeManaUseLogEntry;
 import com.github.maxopoly.MemeMana.model.MemeManaTransferLogEntry;
-import java.lang.reflect.InvocationTargetException;
+import com.github.maxopoly.MemeMana.model.MemeManaUseLogEntry;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -20,7 +18,6 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class MemeManaDAO extends ManagedDatasource {
 
-	private static final MemeManaOwnerManager ownerManager = MemeManaPlugin.getInstance().getOwnerManager();
 	private Logger logger;
 
 	public MemeManaDAO(MemeManaPlugin plugin, String user, String pass, String host, int port, String database,
@@ -67,13 +64,13 @@ public class MemeManaDAO extends ManagedDatasource {
 		registerUUID(pearled);
 		try (Connection connection = getConnection();
 				PreparedStatement ps = connection
-						.prepareStatement("insert into manaUseLog (creator, user, pearled, upgrade, mana, logTime) select c.manaLogId, u.manaLogId, p.manaLogId, ?, ?, ? from manaUUIDs join manaUUIDs c on c.manaLogUUID = ? join manaUUIDs u on u.manaLogUUID = ? join manaUUIDs p on p.manaLogUUID = ? on duplicate key update creator = manaUseLog.creator, user = manaUseLog.user, pearled = manaUseLog.pearled, upgrade = manaUseLog.upgrade, mana = ? + manaUseLog.mana;")) {
-			ps.setBoolean(1, isUpgrade);
-			ps.setInt(2, amount);
-			ps.setLong(3, timestamp);
-			ps.setString(4, creator.toString());
-			ps.setString(5, user.toString());
-			ps.setString(6, pearled.toString());
+						.prepareStatement("insert into manaUseLog (creator, user, pearled, upgrade, mana, logTime) values ((select manaLogId from manaUUIDs where manaLogUUID = ?), (select manaLogId from manaUUIDs where manaLogUUID = ?), (select manaLogId from manaUUIDs where manaLogUUID = ?), ?, ?, ?) on duplicate key update creator = manaUseLog.creator, user = manaUseLog.user, pearled = manaUseLog.pearled, upgrade = manaUseLog.upgrade, mana = ? + manaUseLog.mana;")) {
+			ps.setString(1, creator.toString());
+			ps.setString(2, user.toString());
+			ps.setString(3, pearled.toString());
+			ps.setBoolean(4, isUpgrade);
+			ps.setInt(5, amount);
+			ps.setLong(6, timestamp);
 			ps.setInt(7, amount);
 			ps.execute();
 		} catch (SQLException e) {
@@ -102,7 +99,7 @@ public class MemeManaDAO extends ManagedDatasource {
 	public Stream<MemeManaUseLogEntry> getUseLog(UUID pearled) {
 		try (Connection connection = getConnection();
 				PreparedStatement getCreatorUUID = connection
-						.prepareStatement("select l.logTime, c.manaLogUUID, u.manaLogUUID, p.manaLogUUID, l.upgrade, l.mana from manaUseLog l join manaUUIDs p on p.manaLogUUID = ? join manaUUIDs c on c.manaLogId = l.creator join manaUUIDs u on u.manaLogId = l.user;")) {
+						.prepareStatement("select l.logTime, c.manaLogUUID, u.manaLogUUID, p.manaLogUUID, l.upgrade, l.mana from manaUseLog l join manaUUIDs p on p.manaLogId = l.pearled join manaUUIDs c on c.manaLogId = l.creator join manaUUIDs u on u.manaLogId = l.user where p.manaLogUUID = ?;")) {
 			getCreatorUUID.setString(1,pearled.toString());
 			ResultSet rs = getCreatorUUID.executeQuery();
 			Stream.Builder<MemeManaUseLogEntry> b = Stream.builder();
@@ -244,7 +241,6 @@ public class MemeManaDAO extends ManagedDatasource {
 				PreparedStatement getManaOwner = connection
 						.prepareStatement("select id, foreignId, foreignIdType from manaOwners;");
 				ResultSet rs = getManaOwner.executeQuery();) {
-			int thisOwner = -1;
 			while(rs.next()) {
 				int id = rs.getInt(1);
 				OwnerType ty = MemeManaOwnerManager.ownerTypeFromMagicNumber(rs.getInt(3));
@@ -302,7 +298,7 @@ public class MemeManaDAO extends ManagedDatasource {
 				PreparedStatement updateManaStat = connection
 						.prepareStatement("replace into manaStats (ownerId, streak, lastDay) values(?,?,?)")) {
 			updateManaStat.setInt(1, owner);
-			updateManaStat.setInt(2, stat.getStreak());
+			updateManaStat.setInt(2, stat.getStreakField());
 			updateManaStat.setLong(3, stat.getLastDay());
 			updateManaStat.execute();
 		} catch (SQLException e) {

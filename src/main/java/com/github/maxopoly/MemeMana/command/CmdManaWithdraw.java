@@ -1,23 +1,16 @@
 package com.github.maxopoly.MemeMana.command;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-import vg.civcraft.mc.namelayer.NameAPI;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlType;
-import com.github.maxopoly.MemeMana.model.MemeManaPouch;
-import com.github.maxopoly.MemeMana.model.ManaGainStat;
 import com.github.maxopoly.MemeMana.MemeManaOwnerManager;
-import com.github.maxopoly.MemeMana.MemeManaPlugin;
-import org.bukkit.entity.Player;
-import org.bukkit.command.CommandSender;
-import java.util.UUID;
+import com.github.maxopoly.MemeMana.model.MemeManaPouch;
 import java.util.List;
-import java.util.LinkedList;
-import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CmdManaWithdraw extends PlayerCommand {
 	public static final String withdrawPermissionName = "MEMEMANA_WITHDRAW";
@@ -60,7 +53,7 @@ public class CmdManaWithdraw extends PlayerCommand {
 		}
 
 		if (fromPouch.transferMana(toPouch,transferAmount)) {
-			sender.sendMessage(ChatColor.GREEN + "You withdrew " + ChatColor.GOLD + transferAmount + " mana from the group " + ChatColor.AQUA + args[0]);
+			sender.sendMessage(ChatColor.GREEN + "You withdrew " + ChatColor.GOLD + transferAmount + ChatColor.GREEN + " mana from the group " + ChatColor.AQUA + args[0]);
 			return true;
 		}
 		sender.sendMessage(ChatColor.RED + "Mana withdraw unsuccessful; Make sure you have enough mana in the group");

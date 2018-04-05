@@ -9,10 +9,10 @@ mysql:
   idleTimout: 600000
   maxLifetime: 7200000
 manaRotTime: 30d
-manaGainTimeout: 22h
 manaWaitTime: 30m
+serverRestartOffset: 10h5m
 maximumDailyMana: 10
 pearlRefillAmount: 
   EXILE: 1
   PRISON: 1
-pearlupgradeAmount: 10
+pearlUpgradeAmount: 10
